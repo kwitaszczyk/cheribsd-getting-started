@@ -10,7 +10,7 @@ on:
       - created
 
 env:
-  PUBLISH_BRANCH: ${{ startsWith(github.ref_name, 'releng/') && join(['gh-pages-', github.ref_name], '') || 'gh-pages' }}
+  PUBLISH_BRANCH: ${{ startsWith(github.ref_name, 'releng/') && format('{0}{1}', 'gh-pages-', github.ref_name) || 'gh-pages' }}
 
 jobs:
   build:
