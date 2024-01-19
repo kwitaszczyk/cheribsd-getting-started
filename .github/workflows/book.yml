@@ -2,11 +2,15 @@ name: Build book
 
 on:
   push:
-    branches-ignore:
-      - gh-pages
+    branches:
+      - main
+      - releng/*
   release:
     types:
       - created
+
+env:
+  PUBLISH_BRANCH: ${{ startsWith(github.ref_name, 'releng/') && format('{0}{1}', 'gh-pages-', github.ref_name) || 'gh-pages' }}
 
 jobs:
   build:
@@ -34,7 +38,7 @@ jobs:
           path: book
 
   draft-release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push'
     needs: build
     runs-on: ubuntu-20.04
     steps:
@@ -99,7 +103,7 @@ jobs:
           asset_content_type: application/zip
 
   deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push'
     needs: build
     runs-on: ubuntu-20.04
     steps:
@@ -113,3 +117,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: ${{ env.PUBLISH_BRANCH }}
