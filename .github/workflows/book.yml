@@ -56,18 +56,18 @@ jobs:
 
       - name: Download artifact
         uses: actions/download-artifact@v2
-        if: steps.check-tag.outputs.exists != 'false'
+        if: steps.check-tag.outputs.exists == 'false'
         with:
           name: book
           path: cheribsd-getting-started-snapshot
 
       - name: Create archive
-        if: steps.check-tag.outputs.exists != 'false'
+        if: steps.check-tag.outputs.exists == 'false'
         run: zip -r cheribsd-getting-started-snapshot-${{ github.sha }}.zip cheribsd-getting-started-snapshot
 
       - name: Create release
         id: create_release
-        if: steps.check-tag.outputs.exists != 'false'
+        if: steps.check-tag.outputs.exists == 'false'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -79,7 +79,7 @@ jobs:
 
       - name: Upload release asset
         id: upload-release-asset
-        if: steps.check-tag.outputs.exists != 'false'
+        if: steps.check-tag.outputs.exists == 'false'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
