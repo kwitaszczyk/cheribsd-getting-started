@@ -2,15 +2,19 @@ name: Build book
 
 on:
   push:
-    branches:
-      - main
-      - releng/*
+    branches-ignore:
+      - gh-pages
+      - gh-pages-*
   release:
     types:
       - created
 
 env:
-  PUBLISH_BRANCH: ${{ startsWith(github.ref_name, 'releng/') && format('{0}{1}', 'gh-pages-', github.ref_name) || 'gh-pages' }}
+  PUBLISH_BRANCH: |
+    ${{ \
+    (github.ref_name == 'main' && 'gh-pages') || \
+    (startsWith(github.ref_name, 'releng/') && format('{0}{1}', 'gh-pages-', github.ref_name)) \
+    }}
 
 jobs:
   build:
@@ -38,7 +42,7 @@ jobs:
           path: book
 
   draft-release:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && env.PUBLISH_BRANCH != ''
     needs: build
     runs-on: ubuntu-20.04
     steps:
@@ -103,7 +107,7 @@ jobs:
           asset_content_type: application/zip
 
   deploy:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && env.PUBLISH_BRANCH != ''
     needs: build
     runs-on: ubuntu-20.04
     steps:
