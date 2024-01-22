@@ -10,11 +10,7 @@ on:
       - created
 
 env:
-  PUBLISH_BRANCH: |
-    ${{
-    (github.ref_name == 'main' && 'gh-pages') ||
-    (startsWith(github.ref_name, 'releng/') && format('{0}{1}', 'gh-pages-', github.ref_name))
-    }}
+  PUBLISH_BRANCH: ${{ (github.ref_name == 'main' && 'gh-pages') || (startsWith(github.ref_name, 'releng/') && format('{0}{1}', 'gh-pages-', github.ref_name)) }}
 
 jobs:
   build:
