@@ -38,7 +38,7 @@ jobs:
           path: book
 
   draft-release:
-    if: github.event_name == 'push' && env.PUBLISH_BRANCH != ''
+    if: github.event_name == 'push' && (github.ref_name == 'main' || startsWith(github.ref_name, 'releng/'))
     needs: build
     runs-on: ubuntu-20.04
     steps:
@@ -115,7 +115,7 @@ jobs:
           asset_content_type: application/zip
 
   deploy:
-    if: github.event_name == 'push' && env.PUBLISH_BRANCH != ''
+    if: github.event_name == 'push' && (github.ref_name == 'main' || startsWith(github.ref_name, 'releng/'))
     needs: build
     runs-on: ubuntu-20.04
     steps:
